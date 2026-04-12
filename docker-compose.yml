@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  semaphore:
+    image: semaphoreui/semaphore:v2.16.47
+    container_name: semaphore_con
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      #Database (PostgreSQL)
+      SEMAPHORE_DB_DIALECT: postgres
+      SEMAPHORE_DB_HOST: postgres
+      SEMAPHORE_DB_PORT: 5432
+      SEMAPHORE_DB_USER: semaphore
+      SEMAPHORE_DB_PASS: semaphore
+      SEMAPHORE_DB: semaphore_DB
+      #Semaphore settings
+      SEMAPHORE_PLAYBOOK_PATH: /tmp
+      #Initial Admin User
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_ADMIN_NAME: admin
+      SEMAPHORE_ADMIN_EMAIL: admin@example.com
+      SEMAPHORE_ADMIN_PASSWORD: admin123
+
+    volumes:
+      - semaphore_data:/etc/semaphore
+
+  postgres:
+    image: postgres:15
+    container_name: semaphore_postgres_con
+    restart: always
+    environment:
+      POSTGRES_DB: semaphore_DB
+      POSTGRES_USER: semaphore
+      POSTGRES_PASSWORD: semaphore
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  semaphore_data:
+
