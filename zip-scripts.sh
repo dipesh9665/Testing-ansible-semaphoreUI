@@ -1,18 +1,10 @@
 #!/bin/bash
 
-echo "Running zip script..."
+OUTPUT_DIR="/home/ubuntu/output"
 
-# Create file
-echo "Hello from Semaphore UI" > sample.txt
+mkdir -p $OUTPUT_DIR
 
-# Install zip if not present
-if ! command -v zip &> /dev/null
-then
-    echo "zip not found, installing..."
-    sudo apt update && sudo apt install -y zip
-fi
+echo "Hello from Semaphore UI" > $OUTPUT_DIR/sample.txt
+zip $OUTPUT_DIR/sample.zip $OUTPUT_DIR/sample.txt
 
-# Zip file
-zip sample.zip sample.txt
-
-echo "Zip created successfully"
+echo "Zip stored at $OUTPUT_DIR/sample.zip"
