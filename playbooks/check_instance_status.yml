@@ -1,6 +1,6 @@
 ---
 - name: Check instance status using ec2:DescribeInstanceStatus
-  hosts: servers
+  hosts: all
   gather_facts: no
 
   vars:
