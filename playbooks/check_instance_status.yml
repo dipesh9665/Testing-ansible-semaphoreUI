@@ -1,0 +1,40 @@
+---
+- name: Check instance status using ec2:DescribeInstanceStatus
+  hosts: servers
+  gather_facts: no
+
+  vars:
+    instance_id: "i-0f6589eed1577c634"
+    aws_access_key: "AKIAVSRSDP4XPKKVVLS3"
+    aws_secret_key: "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"
+    aws_region: "eu-north-1"
+
+  tasks:
+    - block:
+
+        - name: Run describe-instance-status using AWS CLI with credentials
+          command: >
+            aws ec2 describe-instance-status
+            --instance-ids {{ instance_id }}
+            --region {{ aws_region }}
+            --output json
+          environment:
+            AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+            AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+            AWS_DEFAULT_REGION: "{{ aws_region }}"
+          register: instance_status_raw
+
+        - name: Print raw CLI output
+          debug:
+            var: instance_status_raw.stdout
+
+        - name: Parse and display instance status
+          debug:
+            msg: "{{ instance_status_raw.stdout | from_json }}"
+          when: instance_status_raw.stdout | length > 0
+
+      rescue:
+
+        - name: Log failure fetching instance status
+          debug:
+            msg: "Failed to retrieve EC2 instance status for instance {{ instance_id }}."
