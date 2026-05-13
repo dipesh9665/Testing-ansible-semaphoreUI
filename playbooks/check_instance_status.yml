@@ -5,9 +5,9 @@
 
   vars:
     instance_id: "i-0f6589eed1577c634"
-    aws_access_key: "AKIAVSRSDP4XPKKVVLS3"
-    aws_secret_key: "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"
-    aws_region: "eu-north-1"
+    #aws_access_key: "AKIAVSRSDP4XPKKVVLS3"
+    #aws_secret_key: "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"
+    #aws_region: "eu-north-1"
 
   tasks:
     - block:
