@@ -1,37 +1,33 @@
 ---
-- name: Check and clean memory usage
+- name: Cleanup memory
   hosts: all
   become: true
 
   tasks:
 
-    - name: Show memory before cleanup
-      shell: free -h
-      register: memory_before
+    - name: Memory before cleanup
+      command: free -h
+      register: before_memory
 
-    - name: Print memory before cleanup
-      debug:
-        msg: "{{ memory_before.stdout_lines }}"
+    - debug:
+        var: before_memory.stdout_lines
 
-    - name: Clear /tmp directory
+    - name: Clear tmp
       shell: rm -rf /tmp/*
 
     - name: Clear apt cache
-      shell: apt clean
-
-    - name: Clear journal logs
-      shell: journalctl --vacuum-time=1d
-
-    - name: Sync filesystem
-      shell: sync
+      command: apt clean
 
     - name: Clear RAM cache
-      shell: echo 3 > /proc/sys/vm/drop_caches
+      shell: |
+        sync
+        echo 3 > /proc/sys/vm/drop_caches
+      args:
+        executable: /bin/bash
 
-    - name: Show memory after cleanup
-      shell: free -h
-      register: memory_after
+    - name: Memory after cleanup
+      command: free -h
+      register: after_memory
 
-    - name: Print memory after cleanup
-      debug:
-        msg: "{{ memory_after.stdout_lines }}"
+    - debug:
+        var: after_memory.stdout_lines
