@@ -12,8 +12,8 @@
     - debug:
         var: before_memory.stdout_lines
 
-    - name: Clear tmp
-      shell: rm -rf /tmp/*
+    #- name: Clear tmp
+     # shell: rm -rf /tmp/*
 
     - name: Clear apt cache
       command: apt clean
