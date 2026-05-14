@@ -5,7 +5,7 @@
 
   vars:
     backup_dir: /tmp/nginx_logs_backup
-    control_backup_dir: ~/nginx-log-backups
+    control_backup_dir: /home/ubuntu/nginx-log-backups
 
   tasks:
 
