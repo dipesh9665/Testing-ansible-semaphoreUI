@@ -1,6 +1,6 @@
 ---
 - name: Backup Nginx logs with date and time
-  hosts: servers
+  hosts: all
   become: true
 
   vars:
