@@ -1,0 +1,49 @@
+---
+- name: Backup Nginx logs with date and time
+  hosts: servers
+  become: true
+
+  vars:
+    backup_dir: /tmp/nginx_logs_backup
+    control_backup_dir: ~/nginx-log-backups
+
+  tasks:
+
+    - name: Get current timestamp
+      shell: date +%Y-%m-%d_%H-%M-%S
+      register: current_time
+
+    - name: Create temp backup directory
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy nginx logs
+      shell: |
+        cp /var/log/nginx/*.log {{ backup_dir }}/
+
+    - name: Create zip backup
+      archive:
+        path: "{{ backup_dir }}"
+        dest: "/tmp/{{ inventory_hostname }}-nginx-logs-{{ current_time.stdout }}.zip"
+        format: zip
+
+    - name: Create local backup directory on control node
+      delegate_to: localhost
+      become: false
+      file:
+        path: "{{ control_backup_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Fetch backup zip to control node
+      fetch:
+        src: "/tmp/{{ inventory_hostname }}-nginx-logs-{{ current_time.stdout }}.zip"
+        dest: "{{ control_backup_dir }}/"
+        flat: yes
+
+    - name: Remove temp backup directory
+      file:
+        path: "{{ backup_dir }}"
+        state: absent
